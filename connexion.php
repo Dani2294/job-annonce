@@ -17,7 +17,7 @@
     }
 
     // INSTANCIATION DE PDO
-    $bddPDO = new pdo('mysql:host=localhost;dbname=job-annonce-2', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+    $bddPDO = new pdo('mysql:host=localhost;dbname=job-annonce', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 
     $utilisateurManager = new UtilisateursManager($bddPDO);
     $entrepriseManager = new EntreprisesManager($bddPDO);
@@ -29,7 +29,7 @@
             $currUtilisateur = $utilisateurManager->afficherUtilisateur($_POST['email']);
             if(!empty($currUtilisateur) && password_verify($_POST['mdp'], $currUtilisateur['mdp'])){
                 //var_dump($currUtilisateur);
-                $_SESSION['user']['id'] = $currUtilisateur['id_utilisateur'];
+                $_SESSION['user']['id_utilisateur'] = $currUtilisateur['id_utilisateur'];
                 $_SESSION['user']['nom'] = $currUtilisateur['nom'];
                 $_SESSION['user']['prenom'] = $currUtilisateur['prenom'];
                 $_SESSION['user']['email'] = $currUtilisateur['email'];
