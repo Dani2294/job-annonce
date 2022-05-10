@@ -1,7 +1,6 @@
 <?php require_once 'inc/header.php'; ?>
 
-
-
+<h1>Test</h1>
 
 <h1 class="text-center my-4">Inscription</h1>
 <section class="col-md-6 mx-auto m-1">
