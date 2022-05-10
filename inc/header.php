@@ -1,3 +1,8 @@
+<?php
+  require_once 'inc/bdd.php';
+  require_once 'inc/functions.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,12 +30,23 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="inscription.php">Inscription</a></li>
+            <?php if(!utilisateurEstConnecte() && !entrepriseEstConnecte()): ?>
             <li><a class="dropdown-item" href="connexion.php">Connexion</a></li>
-            <li><a class="dropdown-item" href="profil.php">Profil</a></li>
-            <li><a class="dropdown-item" href="administration.php">Administration</a></li>
-            <li><a class="dropdown-item" href="ajouter-annonce.php">Ajouter annonce</a></li>
+            <?php else: ?>
+            <li><a class="dropdown-item" href="connexion.php?action=deconnexion">Déconnexion</a></li>
+            <?php endif; ?>
           </ul>
         </li>
+
+        <?php if(utilisateurEstConnecte()): ?>
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="profil.php">Mon profil</a>
+        </li>
+        <?php elseif(entrepriseEstConnecte()): ?>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="administration.php">Espace Entreprise</a>
+        </li>
+        <?php endif; ?>
         <li class="nav-item">
           <a class="nav-link" aria-current="page" href="contact.php">Contactez-nous</a>
         </li>
