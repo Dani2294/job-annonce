@@ -16,11 +16,10 @@
         header('location:administration.php');
     }
 
-    // INSTANCIATION DE PDO
-    $bddPDO = new pdo('mysql:host=localhost;dbname=job-annonce', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+   
 
-    $utilisateurManager = new UtilisateursManager($bddPDO);
-    $entrepriseManager = new EntreprisesManager($bddPDO);
+    $utilisateurManager = new UtilisateursManager($pdo);
+    $entrepriseManager = new EntreprisesManager($pdo);
 
     if($_POST){
         if(isset($_GET['type']) && $_GET['type'] == 'user'){

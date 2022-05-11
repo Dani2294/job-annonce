@@ -5,11 +5,9 @@
     require_once 'entity/Entreprise.php';
     require_once 'entity/EntreprisesManager.php';
 
-    // INSTANCIATION DE PDO
-    $bddPDO = new pdo('mysql:host=localhost;dbname=job-annonce', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 
-    $utilisateurManager = new UtilisateursManager($bddPDO);
-    $entrepriseManager = new EntreprisesManager($bddPDO);
+    $utilisateurManager = new UtilisateursManager($pdo);
+    $entrepriseManager = new EntreprisesManager($pdo);
 
     if($_POST){
         //var_dump($_FILES['logo']);
