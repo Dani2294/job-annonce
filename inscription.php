@@ -10,9 +10,9 @@
     $entrepriseManager = new EntreprisesManager($pdo);
 
     if($_POST){
-        //var_dump($_FILES['logo']);
+
         if(isset($_GET['type']) && $_GET['type'] == 'user'){
-            // Do stuff for the user
+
             $utilisateur = new Utilisateur([
                 'nom' => $_POST['nom'],
                 'prenom' => $_POST['prenom'],
@@ -23,6 +23,8 @@
                 'ville' => $_POST['ville']
             ]);
 
+            // S'il n'y a pas d'erreur dans le formulaire
+            // on fait une insertion des donnees du formulaire dans la base de donne
             if($utilisateur->isUserValide()){
                 $utilisateurManager->inserer($utilisateur); //insert dans la bdd
                 $content .= $utilisateurManager->alertMessage('success', 'Votre compte a bien été créé !');
@@ -43,7 +45,9 @@
                     'logo' => $_FILES['logo']
                 ]);
 
-                if($entreprise->isUserValide()){
+            // S'il n'y a pas d'erreur dans le formulaire
+            // on fait une insertion des donnees du formulaire dans la base de donne
+                if($entreprise->isEntrepriseValide()){
                     $entrepriseManager->inserer($entreprise);
                     $content .= $entrepriseManager->alertMessage('success', 'Votre compte a bien été créé !');
                 }

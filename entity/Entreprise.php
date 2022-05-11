@@ -95,7 +95,8 @@ class Entreprise
     {
         if (!empty($logo)) {
             // Concatenation du pseudo et du nom du logo
-            $nom_logo = $this->getNom() . '-' . $logo['name'];
+            // fonction de str_replace() permet enlever les espaces dans le nom
+            $nom_logo = str_replace(' ', '', $this->getNom())  . '-' . $logo['name'];
 
             // On affecte l'url de la logo dans la variable $logo_bdd (chemin du logo)
             $logo_bdd = URL . "logo/$nom_logo";
@@ -157,7 +158,7 @@ class Entreprise
     }
 
     // fonction qui verifie si l utilisateur est valide
-    public function isUserValide()
+    public function isEntrepriseValide()
     {
         // verification: si le tableau d'erreur est vide
         return empty($this->erreurs);

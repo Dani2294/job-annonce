@@ -2,21 +2,21 @@
     require_once 'inc/header.php'; 
     require_once 'entity/UtilisateursManager.php';
     require_once 'entity/Utilisateur.php';
-    require_once 'entity/Entreprise.php';
-    require_once 'entity/EntreprisesManager.php';
 
+    //si utilisateur  et entreprise n'est pas connecte il est rediriger a connexion.php 
     if(!utilisateurEstConnecte() && !entrepriseEstConnecte()){
         header('location:connexion.php');
     }
 
-  
+    //instanciation d'une classe utilisateur manager
     $utilisateurManager = new UtilisateursManager($pdo);
    
 
     if($_POST){
-        //var_dump($_FILES['logo']);
+
        
             // Do stuff for the user
+            // instanciation d'un nouvelle utilisateur
             $utilisateur = new Utilisateur([
                 'nom' => $_POST['nom'],
                 'prenom' => $_POST['prenom'],
@@ -27,6 +27,8 @@
                 'ville' => $_POST['ville']
             ]);
 
+             // s il n y a pas erreur dans le formulaire alors  
+             // on met a jour les informations de utilisateur
             if($utilisateur->isUserValide()){
                $utilisateurManager->update_utilisateur($_SESSION['user']['id_utilisateur'],$_POST);
                $content .= $utilisateurManager->alertMessage("success","Les modifications ont bien été enregistrées");

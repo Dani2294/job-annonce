@@ -44,7 +44,7 @@
         </li>
         <?php elseif(entrepriseEstConnecte()): ?>
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="administration.php">Espace Entreprise</a>
+          <a class="nav-link" aria-current="page" href="espaceEntreprise.php">Espace Entreprise</a>
         </li>
         <?php endif; ?>
         <li class="nav-item">

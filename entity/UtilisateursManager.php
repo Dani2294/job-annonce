@@ -40,13 +40,7 @@ class UtilisateursManager
         $requete2->bindValue(':civilite', $donnees['civilite']);
         $requete2->bindValue(':ville',$donnees['ville'] );
         $requete2->bindValue(':tel', $donnees['tel']);
-        $requete2->execute();
-
-
-
-      
-        
-     
+        $requete2->execute();    
 
     }
         
@@ -61,6 +55,13 @@ class UtilisateursManager
         return $data;
     }
 
+            //methode delete_utilisateur permet de supprimer le compte de l'utilisateur
+    public function delete_utilisateur($id_utilisateur)
+    {
+        if (isset($id_utilisateur) && !empty($id_utilisateur)) {
+             $this->dbPDO->query("DELETE FROM utilisateurs WHERE id_utilisateur = $id_utilisateur");
+        }
+    }
 
     public function alertMessage($type, $message){
         return '<div class="alert alert-'.$type.'">'.$message.'</div>';

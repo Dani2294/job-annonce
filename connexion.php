@@ -3,6 +3,9 @@
     require_once 'entity/UtilisateursManager.php';
     require_once 'entity/EntreprisesManager.php';
 
+    // On desconnecte l'utilisateur ou l'entreprise connecte
+    // si il y a une action de type deconnexion dans l'url
+    // puis on le redirige vers la page connexion
     if(isset($_GET['action']) && $_GET['action'] == 'deconnexion'){
         unset($_SESSION['user']);
         unset($_SESSION['entreprise']);
@@ -10,24 +13,31 @@
         header('location:connexion.php');
     }
 
+    // Si l'utilisateur ou l'entreprise est déjà connecte 
+    // on le/la redirige vers la page de son profil / son espace entreprise
     if(utilisateurEstConnecte()){
         header('location:profil.php');
     } elseif(entrepriseEstConnecte()){
-        header('location:administration.php');
+        header('location:espaceEntreprise.php');
     }
 
    
-
+    // On instancie deux class UtilisateursManager et EntreprisesManager
     $utilisateurManager = new UtilisateursManager($pdo);
     $entrepriseManager = new EntreprisesManager($pdo);
 
     if($_POST){
         if(isset($_GET['type']) && $_GET['type'] == 'user'){
             // Do stuff for the user
-            //var_dump($_POST);
+
+            // On recupere les informations de l'utilisateur qui correspond à 
+            // l'email entrer dans le formulaire de conexion
             $currUtilisateur = $utilisateurManager->afficherUtilisateur($_POST['email']);
+
+            // On verifie qu'il y à bien un utilisateur et on verifie si le mot de passe correspond
             if(!empty($currUtilisateur) && password_verify($_POST['mdp'], $currUtilisateur['mdp'])){
-                //var_dump($currUtilisateur);
+
+                // On affecte les infos de l'utilisateur dans une session
                 $_SESSION['user']['id_utilisateur'] = $currUtilisateur['id_utilisateur'];
                 $_SESSION['user']['nom'] = $currUtilisateur['nom'];
                 $_SESSION['user']['prenom'] = $currUtilisateur['prenom'];
@@ -36,25 +46,35 @@
                 $_SESSION['user']['civilite'] = $currUtilisateur['civilite'];
                 $_SESSION['user']['ville'] = $currUtilisateur['ville'];
 
+                // Si une session entreprise existe, on la supprime
                 if(isset($_SESSION['entreprise'])){
                     unset($_SESSION['entreprise']);
                 }
 
+                // On redirige vers sa page profil
                 header('location: profil.php');
-                //var_dump($_SESSION['entreprise']);
             }
         } elseif(isset($_GET['type']) && $_GET['type'] == 'entreprise'){
+
             // Do stuff for the entreprise
+              // On recupere les informations de l'entreprise qui correspond à 
+            // l'email entrer dans le formulaire de conexion
             $currEntreprise = $entrepriseManager->afficherEntreprise($_POST['email']);
+
+            // On verifie qu'il y à bien une entreprise et on verifie si le mot de passe correspond
             if(!empty($currEntreprise) && password_verify($_POST['mdp'], $currEntreprise['mdp'])){
-                $_SESSION['entreprise']['id'] = $currEntreprise['id_entreprise'];
+
+               // On affecte les infos de l'entreprise dans une session                
+                $_SESSION['entreprise']['id_entreprise'] = $currEntreprise['id_entreprise'];
                 $_SESSION['entreprise']['nom'] = $currEntreprise['nom'];
                 $_SESSION['entreprise']['email'] = $currEntreprise['email'];
                 $_SESSION['entreprise']['tel'] = $currEntreprise['tel'];
                 $_SESSION['entreprise']['ville'] = $currEntreprise['ville'];
                 $_SESSION['entreprise']['secteur_activite'] = $currEntreprise['secteur_activite'];
                 $_SESSION['entreprise']['presentation'] = $currEntreprise['presentation'];
+                $_SESSION['entreprise']['logo'] = $currEntreprise['logo'];
 
+                     // Si une session utilisateur existe, on la supprime
                 if(isset($_SESSION['user'])){
                     unset($_SESSION['user']);
                 }

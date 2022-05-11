@@ -39,8 +39,35 @@ class EntreprisesManager
         return $data;
     }
 
+    public function update_entreprise($id_entreprise,array $donnees)
+    {
+
+        // $requete = $this->dbPDO->query("SELECT * FROM entreprises WHERE id_entreprise = $id_entreprise");
+        // $entreprise = $requete->fetch(PDO::FETCH_ASSOC);
+        // faire un update du dit utilisateur
+        $requete2= $this->dbPDO->prepare("UPDATE entreprises SET nom = :nom, email = :email, tel = :tel, ville = :ville, secteur_activite = :secteur_activite, presentation = :presentation  WHERE id_entreprise = $id_entreprise");
+        
+        $requete2->bindValue(':nom', $donnees['nom']);
+        $requete2->bindValue(':email',$donnees['email'] );
+        $requete2->bindValue(':tel', $donnees['tel']);
+        $requete2->bindValue(':ville',$donnees['ville'] );
+        $requete2->bindValue(':secteur_activite',$donnees['secteur_activite'] );
+        $requete2->bindValue(':presentation',$donnees['presentation'] );
+
+        $requete2->execute();
+
+    }
+
+        //methode delete_entreprise permet de supprimer le compte de l'entreprise
+    public function delete_entreprise($id_entreprise)
+    {
+        if (isset($id_entreprise) && !empty($id_entreprise)) {
+             $this->dbPDO->query("DELETE FROM entreprises WHERE id_entreprise = $id_entreprise");
+        }
+    }
 
     public function alertMessage($type, $message){
         return '<div class="alert alert-'.$type.'">'.$message.'</div>';
     }
 }
+
