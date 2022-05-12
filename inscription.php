@@ -27,7 +27,7 @@
             // on fait une insertion des donnees du formulaire dans la base de donne
             if($utilisateur->isUserValide()){
                 $utilisateurManager->inserer($utilisateur); //insert dans la bdd
-                $content .= $utilisateurManager->alertMessage('success', 'Votre compte a bien été créé !');
+                $content .= alertMessage('success', 'Votre compte a bien été créé !');
             }
         } elseif(isset($_GET['type']) && $_GET['type'] == 'entreprise'){
             // Do stuff for the entreprise
@@ -49,7 +49,7 @@
             // on fait une insertion des donnees du formulaire dans la base de donne
                 if($entreprise->isEntrepriseValide()){
                     $entrepriseManager->inserer($entreprise);
-                    $content .= $entrepriseManager->alertMessage('success', 'Votre compte a bien été créé !');
+                    $content .= alertMessage('success', 'Votre compte a bien été créé !');
                 }
             }
             

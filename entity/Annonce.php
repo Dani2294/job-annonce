@@ -5,10 +5,12 @@ class Annonce
    // proprietes
    private $id_entreprise; 
    private $titre;
+   private $nom_entreprise;
    private $description;
    private $localisation;
    private $contrat;
    private $date_ajout;
+   private $logo_entreprise;
 
    //constructeur
 
@@ -48,6 +50,13 @@ public function setTitre(string $titre)
     }
 }
 
+public function setNom_entreprise(string $nom_entreprise)
+{
+    if (!empty($nom_entreprise)) {
+        $this->nom_entreprise = $nom_entreprise;
+    }
+}
+
 public function setDescription(string $description)
 {
     if (!empty($description)) {
@@ -76,6 +85,13 @@ public function setDate_ajout(string $date_ajout)
     }
 }
 
+public function setLogo_entreprise(string $logo_entreprise)
+{
+    if (!empty($logo_entreprise)) {
+        $this->logo_entreprise = $logo_entreprise;
+    }
+}
+
 // getters
 
 public function getId_entreprise()
@@ -86,6 +102,11 @@ public function getId_entreprise()
 public function getTitre()
 {
     return $this->titre;
+}
+
+public function getNom_entreprise()
+{
+    return $this->nom_entreprise;
 }
 
 public function getDescription()
@@ -108,8 +129,9 @@ public function getDate_ajout()
     return $this->date_ajout;
 }
 
-
-
-
+public function getLogo_entreprise()
+{
+    return $this->logo_entreprise;
+}
 
 }

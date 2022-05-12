@@ -29,7 +29,7 @@
 
             if($entreprise->isEntrepriseValide()){
                $entrepriseManager->update_entreprise($_SESSION['entreprise']['id_entreprise'],$_POST);
-               $content .= $entrepriseManager->alertMessage("success","Les modifications ont bien été enregistrées");
+               $content .= alertMessage("success","Les modifications ont bien été enregistrées");
             }
        
             

@@ -62,8 +62,4 @@ class UtilisateursManager
              $this->dbPDO->query("DELETE FROM utilisateurs WHERE id_utilisateur = $id_utilisateur");
         }
     }
-
-    public function alertMessage($type, $message){
-        return '<div class="alert alert-'.$type.'">'.$message.'</div>';
-    }
 }

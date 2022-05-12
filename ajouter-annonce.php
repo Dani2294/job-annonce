@@ -19,14 +19,16 @@
             $annonce = new Annonce([
                 'id_entreprise' => $_SESSION['entreprise']['id_entreprise'],
                 'titre' => $_POST['titre'],
+                'nom_entreprise' => $_SESSION['entreprise']['nom'],
                 'description' => $_POST['description'],
                 'localisation' => $_POST['localisation'],
                 'contrat' => $_POST['contrat'],
                 'date_ajout' => $_POST['date_ajout'],
-               ]);
+                'logo_entreprise' => $_SESSION['entreprise']['logo']
+            ]);
             // var_dump($_POST);
             $annonceManager->inserer($annonce);
-            $content .= $annonceManager->alertMessage('success', 'votre annonce a bien été ajoutée');
+            $content .= alertMessage('success', 'votre annonce a bien été ajoutée');
         //}
         
     }

@@ -66,8 +66,5 @@ class EntreprisesManager
         }
     }
 
-    public function alertMessage($type, $message){
-        return '<div class="alert alert-'.$type.'">'.$message.'</div>';
-    }
 }
 

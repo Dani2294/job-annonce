@@ -31,7 +31,7 @@
              // on met a jour les informations de utilisateur
             if($utilisateur->isUserValide()){
                $utilisateurManager->update_utilisateur($_SESSION['user']['id_utilisateur'],$_POST);
-               $content .= $utilisateurManager->alertMessage("success","Les modifications ont bien été enregistrées");
+               $content .= alertMessage("success","Les modifications ont bien été enregistrées");
             }
        
             
