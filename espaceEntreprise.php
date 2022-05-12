@@ -3,7 +3,7 @@
 require_once "inc/header.php";
 require_once "entity/EntreprisesManager.php";
 //si entreprise et utilisateur n'est pas connecte il est rediriger a connexion.php 
-if (!entrepriseEstConnecte() && !utilisateurEstConnecte()) {
+if (!entrepriseEstConnecte() && !utilisateurEstConnecte() || utilisateurEstConnecte()) {
     header('location:connexion.php');
 }
 
@@ -30,7 +30,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer') {
 
 </div>
 
-
+<a href="ajouter-annonce.php">Ajouter une annonnce</a>
 
 <!----rappel des informations de l'entreprise----->
 Voici vos informations: <br>

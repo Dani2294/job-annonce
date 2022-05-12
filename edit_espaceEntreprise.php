@@ -5,7 +5,7 @@
     require_once 'entity/Entreprise.php';
     require_once 'entity/EntreprisesManager.php';
 
-    if(!utilisateurEstConnecte() && !entrepriseEstConnecte()){
+    if(!entrepriseEstConnecte() && !utilisateurEstConnecte() || utilisateurEstConnecte()){
         header('location:connexion.php');
     }
 

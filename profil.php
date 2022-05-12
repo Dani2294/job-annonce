@@ -3,7 +3,8 @@
 require_once "inc/header.php";
 require_once "entity/UtilisateursManager.php";
 
-if(!utilisateurEstConnecte()){
+if(!utilisateurEstConnecte() && !entrepriseEstConnecte() || entrepriseEstConnecte())
+{
     header('location:connexion.php');
 }
 $genre="";

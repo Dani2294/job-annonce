@@ -4,7 +4,7 @@
     require_once 'entity/Utilisateur.php';
 
     //si utilisateur  et entreprise n'est pas connecte il est rediriger a connexion.php 
-    if(!utilisateurEstConnecte() && !entrepriseEstConnecte()){
+    if((!utilisateurEstConnecte() && !entrepriseEstConnecte() || entrepriseEstConnecte())){
         header('location:connexion.php');
     }
 

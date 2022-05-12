@@ -52,7 +52,7 @@
                 }
 
                 // On redirige vers sa page profil
-                header('location: profil.php');
+                header('location:profil.php');
             }
         } elseif(isset($_GET['type']) && $_GET['type'] == 'entreprise'){
 
@@ -79,7 +79,7 @@
                     unset($_SESSION['user']);
                 }
 
-                header('location: administration.php');
+                header('location: espaceEntreprise.php');
                 //var_dump($_SESSION['user']);
             }
         }

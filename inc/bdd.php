@@ -9,12 +9,12 @@ session_start();
 
 // Definition de constantes
 // POUR WAMP
-//define('RACINE_SITE', $_SERVER['DOCUMENT_ROOT'].'/');
-//define('URL', '/');
-
-// Pour XAMP ET MAMP
 define('RACINE_SITE', $_SERVER['DOCUMENT_ROOT'].'/job-annonce/');
 define('URL', 'http://localhost/job-annonce/');
+
+// Pour XAMP ET MAMP
+// define('RACINE_SITE', $_SERVER['DOCUMENT_ROOT'].'/job-annonce/');
+// define('URL', 'http://localhost/job-annonce/');
 
 $content = '';
 ?>
