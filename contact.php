@@ -1,57 +1,96 @@
 <?php 
+require_once 'inc/header.php'; 
+    /*
+    *  CONFIGURE EVERYTHING HERE
+    */
 
-/* Page: contact.php */
-//mettez ici votre adresse mail
-$VotreAdresseMail="j.annonce.2022@gmail.com";
-// si le bouton "Envoyer" est cliqué
-if(isset($_POST['envoyer'])) {
-    //on vérifie que le champ mail est correctement rempli
-    if(empty($_POST['email'])) {
-        echo "Le champ email est vide";
-    } else {
-        //on vérifie que l'adresse est correcte
-        if(!preg_match("#^[a-z0-9_-]+((\.[a-z0-9_-]+){1,})?@[a-z0-9_-]+((\.[a-z0-9_-]+){1,})?\.[a-z]{2,}$#i",$_POST['email'])){
-            echo "L'adresse email entrée est incorrecte";
-        }else{
-            //on vérifie que le champ sujet est correctement rempli
-            if(empty($_POST['sujet'])) {
-                echo "Le champ sujet est vide";
-            }else{
-                //on vérifie que le champ message n'est pas vide
-                if(empty($_POST['message'])) {
-                    echo "Le champ message est vide";
-                }else{
-                    //tout est correctement renseigné, on envoi le mail
-                    //on renseigne les entêtes de la fonction mail de PHP
-                    $Entetes = "MIME-Version: 1.0\r\n";
-                    $Entetes .= "Content-type: text/html; charset=UTF-8\r\n";
-                    $Entetes .= "From: job-annonce <".$_POST['email'].">\r\n";//de préférence une adresse avec le même domaine de là où, vous utilisez ce code, cela permet un envoie quasi certain jusqu'au destinataire
-                    $Entetes .= "Reply-To: job-annonce <".$_POST['email'].">\r\n";
-                    //on prépare les champs:
-                    $Mail=$_POST['email']; 
-                    $Sujet='=?UTF-8?B?'.base64_encode($_POST['sujet']).'?=';//Cet encodage (base64_encode) est fait pour permettre aux informations binaires d'être manipulées par les systèmes qui ne gèrent pas correctement les 8 bits (=?UTF-8?B? est une norme afin de transmettre correctement les caractères de la chaine)
-                    $Message=htmlentities($_POST['message'],ENT_QUOTES,"UTF-8");//htmlentities() converti tous les accents en entités HTML, ENT_QUOTES Convertit en + les guillemets doubles et les guillemets simples, en entités HTML
-                    //en fin, on envoi le mail
-                    if(mail($VotreAdresseMail,$Sujet,nl2br($Message),$Entetes)){//la fonction nl2br permet de conserver les sauts de ligne et la fonction base64_encode de conserver les accents dans le titre
-                        echo "Le mail à été envoyé avec succès!";
-                    } else {
-                        echo "Une erreur est survenue, le mail n'a pas été envoyé";
-                    }
+    // an email address that will be in the From field of the email.
+    $from = 'Job Annonce';
+
+    // an email address that will receive the email with the output of the form
+    $sendTo = 'Demo contact form <j.annonce.2022@gmail.com>';
+
+    // subject of the email
+    $subject = 'Nouvaux message de Job Annonce';
+
+    // form field names and their translations.
+    // array variable name => Text to appear in the email
+    $fields = array('name' => 'Name', 'surname' => 'Surname', 'phone' => 'Phone', 'email' => 'Email', 'message' => 'Message'); 
+
+    // message that will be displayed when everything is OK :)
+    $okMessage = '
+    Message envoyé avec succès. Merci, nous vous répondrons trés bientôt!';
+
+    // If something goes wrong, we will display this message.
+    $errorMessage = 'Une erreur s\'est produite lors de la soumission du formulaire. Veuillez réessayer plus tard';
+
+    /*
+    *  LET'S DO THE SENDING
+    */
+
+    // if you are not debugging and don't need error reporting, turn this off by error_reporting(0);
+    error_reporting(E_ALL & ~E_NOTICE);
+
+    if($_POST){
+        try
+        {
+    
+            if(count($_POST) == 0) throw new \Exception('Form is empty');
+                    
+            $emailText = "Vous avez un nouveaux message\n=============================\n";
+    
+            foreach ($_POST as $key => $value) {
+                // If the field exists in the $fields array, include it in the email 
+                if (isset($fields[$key])) {
+                    $emailText .= "$fields[$key]: $value\n";
                 }
             }
+    
+            // All the neccessary headers for the email.
+            $headers = array('Content-Type: text/plain; charset="UTF-8";',
+                'From: ' . $from,
+                'Reply-To: ' . $from,
+                'Return-Path: ' . $from,
+            );
+            
+            // Send email
+            mail($sendTo, $subject, $emailText, implode("\n", $headers));
+    
+            $responseArray = array('type' => 'success', 'message' => $okMessage);
+    
+            // Affiche le message de réussite au dessus du formulaire
+            $content .= alertMessage('success', $okMessage);
+        }
+        catch (\Exception $e)
+        {
+            $responseArray = array('type' => 'danger', 'message' => $errorMessage);
+    
+            // Affiche le message d'erreur au dessus du formulaire
+            $content .= alertMessage('danger', $errorMessage);
+        }
+
+        // if requested by AJAX request return JSON response
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            $encoded = json_encode($responseArray);
+    
+            header('Content-Type: application/json');
+    
+            echo $encoded;
+        }
+        // else just display the message
+        else {
+            //echo $responseArray['message'];
         }
     }
-}
+    
 
+?>
 
-
-require_once 'inc/header.php'; ?>
-
-<h1 class="text-center my-3" >Contacter nous</h1>
+<h1 class="text-center my-3" >Contactez nous</h1>
 
 <section class="col-md-6 mx-auto m-1 py-3">
-<form action="post" method="post" id="form-contact">
-<!-- <?= $content; ?> -->
+<form action="contact.php" method="post" id="form-contact">
+    <?= $content; ?>
         <div class="mb-3">
             <label for="nom">Nom</label>
             <input class="form-control" type="text" name="nom" id="nom" value="" placeholder="Entrer votre nom..." />
@@ -79,8 +118,7 @@ require_once 'inc/header.php'; ?>
 
         <div class="mb-3">
             <label for="message">Message</label>
-            <textarea class="form-control"  name="message" id="message"  placeholder="Entrez votre message..." >
-            </textarea>
+            <textarea class="form-control"  name="message" id="message"  placeholder="Entrez votre message..." ></textarea>
         </div>
 
         <div class="mt-2">

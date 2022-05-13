@@ -11,10 +11,11 @@ class EntreprisesManager
         $this->dbPDO = $dbPDO;
     }
 
-    // fonction qui va insérer un utilisateur dans la base de données
+    // methode qui va insérer un utilisateur dans la base de données
     public function inserer(Entreprise $entreprise)
     {
-        $requete = $this->dbPDO->prepare('INSERT INTO entreprises (nom, email, mdp, tel, ville, secteur_activite, presentation, logo) VALUES (:nom, :email, :mdp, :tel, :ville, :secteur_activite, :presentation, :logo)');
+
+        $requete = $this->dbPDO->prepare("INSERT INTO entreprises (nom, email, mdp, tel, ville, secteur_activite, presentation, logo) VALUES (:nom, :email, :mdp, :tel, :ville, :secteur_activite, :presentation, :logo)");
 
         $requete->bindValue(':nom', $entreprise->getNom());
         $requete->bindValue(':email', $entreprise->getEmail());
@@ -28,6 +29,7 @@ class EntreprisesManager
         $requete->execute();
     }
 
+    // requete pour afficher une entreprise
     public function afficherEntreprise(string $email)
     {
         $requete = $this->dbPDO->prepare('SELECT * FROM entreprises WHERE email = :email');
@@ -39,11 +41,9 @@ class EntreprisesManager
         return $data;
     }
 
+    // requete pour mettre à jour les données d'une entreprise
     public function update_entreprise($id_entreprise,array $donnees)
     {
-
-        // $requete = $this->dbPDO->query("SELECT * FROM entreprises WHERE id_entreprise = $id_entreprise");
-        // $entreprise = $requete->fetch(PDO::FETCH_ASSOC);
         // faire un update du dit utilisateur
         $requete2= $this->dbPDO->prepare("UPDATE entreprises SET nom = :nom, email = :email, tel = :tel, ville = :ville, secteur_activite = :secteur_activite, presentation = :presentation  WHERE id_entreprise = $id_entreprise");
         
@@ -58,11 +58,11 @@ class EntreprisesManager
 
     }
 
-        //methode delete_entreprise permet de supprimer le compte de l'entreprise
+    //requete delete_entreprise permet de supprimer le compte de l'entreprise
     public function delete_entreprise($id_entreprise)
     {
         if (isset($id_entreprise) && !empty($id_entreprise)) {
-             $this->dbPDO->query("DELETE FROM entreprises WHERE id_entreprise = $id_entreprise");
+            $this->dbPDO->query("DELETE FROM entreprises WHERE id_entreprise = $id_entreprise");
         }
     }
 

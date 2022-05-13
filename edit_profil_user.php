@@ -4,19 +4,18 @@
     require_once 'entity/Utilisateur.php';
 
     //si utilisateur  et entreprise n'est pas connecte il est rediriger a connexion.php 
+    // Seul un utilisateur connecté peut avoir accès a cette page
     if((!utilisateurEstConnecte() && !entrepriseEstConnecte() || entrepriseEstConnecte())){
         header('location:connexion.php');
     }
 
     //instanciation d'une classe utilisateur manager
+    // pour pouvoir mettre a jour les donnees dans la bdd
     $utilisateurManager = new UtilisateursManager($pdo);
    
 
     if($_POST){
-
-       
-            // Do stuff for the user
-            // instanciation d'un nouvelle utilisateur
+            // instanciation d'une nouvelle class utilisateur
             $utilisateur = new Utilisateur([
                 'nom' => $_POST['nom'],
                 'prenom' => $_POST['prenom'],
@@ -27,20 +26,27 @@
                 'ville' => $_POST['ville']
             ]);
 
-             // s il n y a pas erreur dans le formulaire alors  
-             // on met a jour les informations de utilisateur
+            // S'il n'y a pas d'erreur dans le formulaire
+            // on fait une insertion des donnees du formulaire dans la base de donne
+            // Sinon on affiche les erreurs
             if($utilisateur->isUserValide()){
-               $utilisateurManager->update_utilisateur($_SESSION['user']['id_utilisateur'],$_POST);
-               $content .= alertMessage("success","Les modifications ont bien été enregistrées");
+                $utilisateurManager->update_utilisateur($_SESSION['user']['id_utilisateur'],$_POST); // MAJ les donnees dans bdd
+                $content .= alertMessage("success","Les modifications ont bien été enregistrées");
+            } else {
+                // ici on récupère les erreurs si il y en a
+                $erreurs = $utilisateur->getErreurs();
+
+                // ici on affiche les erreurs avec une boucle foreach
+                foreach($erreurs as $erreur){
+                    $content .= alertMessage('danger', $erreur);
+                }
             }
-       
-            
-            
-        
     }
 ?>
 
-<h1 class="text-center my-3" >Editer profil</h1>
+<h1 class="text-center my-3" >Editer votre profil <?= $_SESSION['user']['nom'] ." ". $_SESSION['user']['prenom'] ?></h1>
+
+<a href="profil.php" class="btn btn-dark ms-4">Retour sur le profil</a>
 
 <section class="col-md-6 mx-auto m-1 py-3">
     
@@ -65,7 +71,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="mdp">Mot de passe</label>
+            <label for="mdp">Mot de passe (entrez le même mdp que lors de l'inscription. PS: on a pas eu le temps de gérer le nouveau mdp 😅)</label>
             <input class="form-control" type="password" name="mdp" id="mdp"  placeholder="Entrer votre mot de passe..." />
         </div>
 
