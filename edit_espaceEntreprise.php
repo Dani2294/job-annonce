@@ -1,57 +1,66 @@
 <?php 
     //a modifier
     require_once 'inc/header.php'; 
-
     require_once 'entity/Entreprise.php';
     require_once 'entity/EntreprisesManager.php';
 
+    // Si l'entreprise n'est pas connectée et l'utilisateur est ou n'est pas connecte 
+    // on redirige vers la page de connexion
+    // Seulement une entreprise qui est connecté qui peut avoir accès a cette page
     if(!entrepriseEstConnecte() && !utilisateurEstConnecte() || utilisateurEstConnecte()){
         header('location:connexion.php');
     }
 
-  
+    // On instancie une class EntreprisesManager
+    // qui va servir à update les donnees de l'entreprise
     $entrepriseManager = new EntreprisesManager($pdo);
-   
+
 
     if($_POST){
+        // On instancie une nouvelle class Entreprise
+        $entreprise = new Entreprise([
+            'nom' => $_POST['nom'],
+            'email' => $_POST['email'],
+            'mdp' => $_POST['mdp'],
+            'tel' => $_POST['tel'],
+            'ville' => $_POST['ville'],
+            'secteur_activite' => $_POST['secteur_activite'],
+            'presentation' => $_POST['presentation'],
+        ]);
 
-       
-            // Do stuff for the entreprise
-            $entreprise = new Entreprise([
-                'nom' => $_POST['nom'],
-                'email' => $_POST['email'],
-                'tel' => $_POST['tel'],
-                'ville' => $_POST['ville'],
-                'secteur_activite' => $_POST['secteur_activite'],
-                'presentation' => $_POST['presentation'],
+        // S'il n'y a pas d'erreur dans le formulaire
+        // on fait une mise à jour des donnees du formulaire dans la base de donne
+        if($entreprise->isEntrepriseValide()){
+            $entrepriseManager->update_entreprise($_SESSION['entreprise']['id_entreprise'],$_POST); // Ici MAJ des donnnees de l'entreprise dans la bdd
+            $content .= alertMessage("success","Les modifications ont bien été enregistrées");
+        } else {
+            // ici on récupère les erreurs si il y en a
+            $erreurs = $entreprise->getErreurs();
 
-            ]);
-
-            if($entreprise->isEntrepriseValide()){
-               $entrepriseManager->update_entreprise($_SESSION['entreprise']['id_entreprise'],$_POST);
-               $content .= alertMessage("success","Les modifications ont bien été enregistrées");
+            // ici on affiche les erreurs avec une boucle foreach
+            foreach($erreurs as $erreur){
+                $content .= alertMessage('danger', $erreur);
             }
-       
-            
-            
-        
+        }
     }
 ?>
 
-<h1 class="text-center my-3" >Editer profil</h1>
+<h1 class="text-center my-3" >Editer le profil de votre entreprise</h1>
+
+<a href="espaceEntreprise.php" class="btn btn-dark ms-4">Retour sur espace entreprise</a>
 
 <section class="col-md-6 mx-auto m-1 py-3">
     
     
     <!-- Formulaire modification utilisateur -->
     <form action="" method="post" id="form-entreprise">
-      
+
         <?= $content; ?>
         <div class="mb-3">
             <label for="nom">Nom</label>
             <input class="form-control" type="text" name="nom" id="nom" value="<?= $_SESSION['entreprise']['nom']?>" placeholder="Entrer votre nom..." />
         </div>
-       
+
 
         <div class="mb-3">
             <label for="email">Email</label>
@@ -59,7 +68,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="mdp">Mot de passe</label>
+            <label for="mdp">Mot de passe (entrez le même mdp que lors de l'inscription. PS: on a pas eu le temps de gérer le nouveau mdp 😅)</label>
             <input class="form-control" type="password" name="mdp" id="mdp"  placeholder="Entrer votre mot de passe..." />
         </div>
 
@@ -84,8 +93,7 @@
         <div class="mb-3">
             <label for="presentation">Presentation</label>
             <textarea class="form-control"  name="presentation" id="presentation"  placeholder="Decrivez votre entreprise" >
-            <?= $_SESSION['entreprise']['presentation']?>
-            </textarea>
+            <?= $_SESSION['entreprise']['presentation']?></textarea>
         </div>
 
         <div class="mt-2">
@@ -93,8 +101,6 @@
         </div>
     </form>
 
-    
- 
 </section>
 
 <?php require_once 'inc/footer.php'; ?>

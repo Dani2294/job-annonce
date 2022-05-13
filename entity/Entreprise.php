@@ -3,7 +3,10 @@
 class Entreprise
 {
     // proprietes
+
+    // Tableau d'erreurs qui vas nous servir pour récupérer les erreurs
     private $erreurs = [];
+
     private $nom;
     private $email;
     private $mdp;
@@ -12,11 +15,6 @@ class Entreprise
     private $secteur_activite;
     private $presentation;
     private $logo;
-
-    // creation de constantes d invalidité
-    const NOM_INVALIDE = 1;
-    const PRENOM_INVALIDE = 2;
-    const EMAIL_INVALIDE = 3;
 
     // constructeur
     public function __construct(array $donnees){
@@ -28,6 +26,8 @@ class Entreprise
     public function hydrater($donnees)
     {
         foreach ($donnees as $attribut => $valeur) {
+            // Execute la protection des champs uniquement si la $valeur n'est pas de type array
+            // Car la $valeur du logo est de type array lorsqu'on la reçoit
             if(!gettype($valeur) == 'array'){
                 $valeur = htmlspecialchars($valeur);
                 $valeur = addslashes($valeur);
@@ -38,11 +38,13 @@ class Entreprise
         }
     }
 
-    // setters
+    // =============== LES SETTERS ===============
     public function setNom(string $nom)
     {
         if (!empty($nom)) {
-            $this->nom = $nom;
+                $this->nom = $nom;
+        } else {
+            $this->erreurs[] = 'Le <b>nom</b> est obligatoire';
         }
     }
 
@@ -51,15 +53,21 @@ class Entreprise
         if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->email = $email;
         } else {
-            $this->erreurs[] = self::EMAIL_INVALIDE;
+            $this->erreurs[] = "<b>L'email</b> n'est pas valide";
         }
     }
 
     public function setMdp(string $mdp)
     {
         if(!empty($mdp)){
-            $cryptedMpd = password_hash($mdp, PASSWORD_DEFAULT);
-            $this->mdp = $cryptedMpd;
+            if(strlen($mdp) < 5){
+                $this->erreurs[] = 'Le <b>mot de passe</b> doit contenir au moins 5 caractères';
+            } else {
+                $cryptedMpd = password_hash($mdp, PASSWORD_DEFAULT);
+                $this->mdp = $cryptedMpd;
+            }
+        } else {
+            $this->erreurs[] = 'Le <b>mot de passe</b> est obligatoire';
         }
     }
 
@@ -67,6 +75,8 @@ class Entreprise
     {
         if (!empty($tel)) {
             $this->tel = $tel;
+        } else {
+            $this->erreurs[] = 'Le <b>numéro de téléphone</b> est obligatoire';
         }
     }
 
@@ -74,6 +84,8 @@ class Entreprise
     {
         if (!empty($ville)) {
             $this->ville = $ville;
+        } else {
+            $this->erreurs[] = 'La <b>ville</b> est obligatoire';
         }
     }
 
@@ -81,6 +93,8 @@ class Entreprise
     {
         if (!empty($secteur_activite)) {
             $this->secteur_activite = $secteur_activite;
+        } else {
+            $this->erreurs[] = "Le <b>secteur d'activité</b> est obligatoire";
         }
     }
 
@@ -88,14 +102,17 @@ class Entreprise
     {
         if (!empty($presentation)) {
             $this->presentation = $presentation;
+        } else {
+            $this->erreurs[] = 'La <b>présentation de votre entreprise</b> est obligatoire';
         }
     }
 
     public function setLogo(array $logo)
     {
         if (!empty($logo)) {
-            // Concatenation du pseudo et du nom du logo
-            // fonction de str_replace() permet enlever les espaces dans le nom
+            // Concatenation du nom de l'entreprise et du nom du logo/image
+            // fonction de str_replace() permet enlever les espaces dans le nom de l'entreprise
+            // car il ne faut pas d'espaces dans une url
             $nom_logo = str_replace(' ', '', $this->getNom())  . '-' . $logo['name'];
 
             // On affecte l'url de la logo dans la variable $logo_bdd (chemin du logo)
@@ -106,11 +123,13 @@ class Entreprise
 
             // On déplace/copy le logo dans le dossier logo grâce a la fonction copy()
             copy($logo['tmp_name'], $logo_dossier);
+
+            // On affecte l'url du logo dans la propriété $logo
             $this->logo = $logo_bdd;
         }
     }
 
-    // getters
+    // =============== LES GETTERS ===============
     public function getNom()
     {
         return $this->nom;
@@ -151,13 +170,13 @@ class Entreprise
         return $this->logo;
     }
 
-    // fonction qui recupere les erreurs
+    // methodes qui recupere les erreurs
     public function getErreurs()
     {
         return $this->erreurs;
     }
 
-    // fonction qui verifie si l utilisateur est valide
+    // methodes qui verifie si l'entreprise est valide
     public function isEntrepriseValide()
     {
         // verification: si le tableau d'erreur est vide

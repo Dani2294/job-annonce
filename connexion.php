@@ -3,13 +3,14 @@
     require_once 'entity/UtilisateursManager.php';
     require_once 'entity/EntreprisesManager.php';
 
-    // On desconnecte l'utilisateur ou l'entreprise connecte
+    // On deconnecte l'utilisateur ou l'entreprise connecte
     // si il y a une action de type deconnexion dans l'url
     // puis on le redirige vers la page connexion
     if(isset($_GET['action']) && $_GET['action'] == 'deconnexion'){
         unset($_SESSION['user']);
         unset($_SESSION['entreprise']);
 
+        // On redirige vers la page connexion
         header('location:connexion.php');
     }
 
@@ -21,66 +22,83 @@
         header('location:espaceEntreprise.php');
     }
 
-   
     // On instancie deux class UtilisateursManager et EntreprisesManager
     $utilisateurManager = new UtilisateursManager($pdo);
     $entrepriseManager = new EntreprisesManager($pdo);
 
     if($_POST){
         if(isset($_GET['type']) && $_GET['type'] == 'user'){
-            // Do stuff for the user
+            // Ici on gère la connexion d'un utilisateur
 
             // On recupere les informations de l'utilisateur qui correspond à 
             // l'email entrer dans le formulaire de conexion
-            $currUtilisateur = $utilisateurManager->afficherUtilisateur($_POST['email']);
+            $currUtilisateur = $utilisateurManager->afficherUtilisateur($_POST['email'], $_POST['nom']);
 
-            // On verifie qu'il y à bien un utilisateur et on verifie si le mot de passe correspond
-            if(!empty($currUtilisateur) && password_verify($_POST['mdp'], $currUtilisateur['mdp'])){
+            // On verifie qu'il y à bien un utilisateur avec ce nom et cette email
+            if(!empty($currUtilisateur)){
 
-                // On affecte les infos de l'utilisateur dans une session
-                $_SESSION['user']['id_utilisateur'] = $currUtilisateur['id_utilisateur'];
-                $_SESSION['user']['nom'] = $currUtilisateur['nom'];
-                $_SESSION['user']['prenom'] = $currUtilisateur['prenom'];
-                $_SESSION['user']['email'] = $currUtilisateur['email'];
-                $_SESSION['user']['tel'] = $currUtilisateur['tel'];
-                $_SESSION['user']['civilite'] = $currUtilisateur['civilite'];
-                $_SESSION['user']['ville'] = $currUtilisateur['ville'];
+                // On verifie que le mot de passe correspond
+                if(password_verify($_POST['mdp'], $currUtilisateur['mdp'])){
 
-                // Si une session entreprise existe, on la supprime
-                if(isset($_SESSION['entreprise'])){
-                    unset($_SESSION['entreprise']);
+                    // On affecte les infos de l'utilisateur dans une session user
+                    $_SESSION['user']['id_utilisateur'] = $currUtilisateur['id_utilisateur'];
+                    $_SESSION['user']['nom'] = $currUtilisateur['nom'];
+                    $_SESSION['user']['prenom'] = $currUtilisateur['prenom'];
+                    $_SESSION['user']['email'] = $currUtilisateur['email'];
+                    $_SESSION['user']['tel'] = $currUtilisateur['tel'];
+                    $_SESSION['user']['civilite'] = $currUtilisateur['civilite'];
+                    $_SESSION['user']['ville'] = $currUtilisateur['ville'];
+    
+                    // Si une session entreprise existe, on la supprime
+                    // car on ne peut pas être connecté comme entreprise et utilisateur à la fois
+                    if(isset($_SESSION['entreprise'])){
+                        unset($_SESSION['entreprise']);
+                    }
+
+                    // On redirige vers sa page profil
+                    header('location:profil.php');
+
+                } else {
+                    $content .= alertMessage('danger', 'Votre mot de passe est incorrect');
                 }
-
-                // On redirige vers sa page profil
-                header('location:profil.php');
+            } else {
+                $content .= alertMessage('danger', 'Votre <b>nom</b> ou <b>email</b> est incorrect <br> ou cet utilisateur n\'existe pas encore');
             }
         } elseif(isset($_GET['type']) && $_GET['type'] == 'entreprise'){
+            // Ici on gère la connexion d'une entreprise
 
-            // Do stuff for the entreprise
               // On recupere les informations de l'entreprise qui correspond à 
             // l'email entrer dans le formulaire de conexion
             $currEntreprise = $entrepriseManager->afficherEntreprise($_POST['email']);
 
-            // On verifie qu'il y à bien une entreprise et on verifie si le mot de passe correspond
-            if(!empty($currEntreprise) && password_verify($_POST['mdp'], $currEntreprise['mdp'])){
+            // On verifie qu'il y a bien une entreprise avce cette email
+            if(!empty($currEntreprise)){
 
-               // On affecte les infos de l'entreprise dans une session                
-                $_SESSION['entreprise']['id_entreprise'] = $currEntreprise['id_entreprise'];
-                $_SESSION['entreprise']['nom'] = $currEntreprise['nom'];
-                $_SESSION['entreprise']['email'] = $currEntreprise['email'];
-                $_SESSION['entreprise']['tel'] = $currEntreprise['tel'];
-                $_SESSION['entreprise']['ville'] = $currEntreprise['ville'];
-                $_SESSION['entreprise']['secteur_activite'] = $currEntreprise['secteur_activite'];
-                $_SESSION['entreprise']['presentation'] = $currEntreprise['presentation'];
-                $_SESSION['entreprise']['logo'] = $currEntreprise['logo'];
+                // On verifie que le mot de passe correspond
+                if(password_verify($_POST['mdp'], $currEntreprise['mdp'])){
+                    // On affecte les infos de l'entreprise dans une session entreprise
+                    $_SESSION['entreprise']['id_entreprise'] = $currEntreprise['id_entreprise'];
+                    $_SESSION['entreprise']['nom'] = $currEntreprise['nom'];
+                    $_SESSION['entreprise']['email'] = $currEntreprise['email'];
+                    $_SESSION['entreprise']['tel'] = $currEntreprise['tel'];
+                    $_SESSION['entreprise']['ville'] = $currEntreprise['ville'];
+                    $_SESSION['entreprise']['secteur_activite'] = $currEntreprise['secteur_activite'];
+                    $_SESSION['entreprise']['presentation'] = $currEntreprise['presentation'];
+                    $_SESSION['entreprise']['logo'] = $currEntreprise['logo'];
 
-                     // Si une session utilisateur existe, on la supprime
-                if(isset($_SESSION['user'])){
-                    unset($_SESSION['user']);
+                    // Si une session entreprise existe, on la supprime
+                    // car on ne peut pas être connecté comme entreprise et utilisateur à la fois
+                    if(isset($_SESSION['user'])){
+                        unset($_SESSION['user']);
+                    }
+
+                    // On redirige vers sa page espace entreprise
+                    header('location: espaceEntreprise.php');
+                } else {
+                    $content .= alertMessage('danger', 'Votre mot de passe est incorrect');
                 }
-
-                header('location: espaceEntreprise.php');
-                //var_dump($_SESSION['user']);
+            } else {
+                $content .= alertMessage('danger', 'Votre <b>email</b> est incorrect <br> ou cette entreprise n\'existe pas encore');
             }
         }
     }
@@ -89,8 +107,9 @@
 <h1 class="text-center my-3" >Connexion</h1>
 
 <section class="col-md-6 mx-auto m-1 py-3">
+    <!-- Ici les boutons qui permettent d'affiche le formulaire de connexion de l'uitilisateur ou de l'entreprise -->
     <div class="d-flex justify-content-center my-3">
-        <a class="btn btn-dark m-2" id="btn-user" href="?type=user" >Je suis un utilisateur</a>
+        <a class="btn btn-dark m-2" id="btn-user" href="?type=user">Je suis un utilisateur</a>
         <a class="btn btn-primary m-2" id="btn-entreprise" href="?type=entreprise" >Je suis une entreprise</a>
     </div>
 

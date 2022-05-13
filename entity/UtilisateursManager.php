@@ -1,5 +1,6 @@
 <?php
 
+// Cette classe permet de gérer les reqêtes SQL pour les utilisateurs
 class UtilisateursManager
 {
     // proprietes
@@ -11,7 +12,7 @@ class UtilisateursManager
         $this->dbPDO = $dbPDO;
     }
 
-    // fonction qui va insérer un utilisateur dans la base de données
+    // methode qui va insérer un utilisateur dans la base de données
     public function inserer(Utilisateur $utilisateur)
     {
         $requete = $this->dbPDO->prepare('INSERT INTO utilisateurs (nom, prenom, email, mdp, tel, civilite, ville) VALUES (:nom, :prenom, :email, :mdp, :tel, :civilite, :ville)');
@@ -26,11 +27,10 @@ class UtilisateursManager
 
         $requete->execute();
     }
+
+    // methode qui va mettre à jour les informations d'un utilisateur
     public function update_utilisateur($id_utilisateur,array $donnees)
     {
-        // au debut recuperation l'utilisateur de l'id correspondant 
-        $requete = $this->dbPDO->query("SELECT * FROM utilisateurs WHERE id_utilisateur = $id_utilisateur");
-        $user = $requete->fetch(PDO::FETCH_ASSOC);
         // faire un update du dit utilisateur
         $requete2= $this->dbPDO->prepare("UPDATE utilisateurs SET nom = :nom, prenom = :prenom, email = :email, tel = :tel, civilite = :civilite, ville = :ville  WHERE id_utilisateur = $id_utilisateur");
         
@@ -43,11 +43,13 @@ class UtilisateursManager
         $requete2->execute();    
 
     }
-        
-    public function afficherUtilisateur(string $email)
+    
+    // methode qui va récupérer un utilisateur de la base de données
+    public function afficherUtilisateur(string $email, string $nom)
     {
-        $requete = $this->dbPDO->prepare('SELECT * FROM utilisateurs WHERE email = :email');
+        $requete = $this->dbPDO->prepare('SELECT * FROM utilisateurs WHERE email = :email AND nom = :nom');
         $requete->bindValue(':email', $email);
+        $requete->bindValue(':nom', $nom);
         $requete->execute();
 
         $data = $requete->fetch(PDO::FETCH_ASSOC);
@@ -55,11 +57,11 @@ class UtilisateursManager
         return $data;
     }
 
-            //methode delete_utilisateur permet de supprimer le compte de l'utilisateur
+    //methode delete_utilisateur permet de supprimer le compte de l'utilisateur
     public function delete_utilisateur($id_utilisateur)
     {
         if (isset($id_utilisateur) && !empty($id_utilisateur)) {
-             $this->dbPDO->query("DELETE FROM utilisateurs WHERE id_utilisateur = $id_utilisateur");
+            $this->dbPDO->query("DELETE FROM utilisateurs WHERE id_utilisateur = $id_utilisateur");
         }
     }
 }

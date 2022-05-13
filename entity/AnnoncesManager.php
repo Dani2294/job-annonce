@@ -4,7 +4,6 @@ class AnnoncesManager
 {
     // proprietes   
     private $dbPDO;
-    public $id;
 
     // constructeur
     public function __construct(PDO $dbPDO)
@@ -15,8 +14,11 @@ class AnnoncesManager
      //requete d'insertion d'une annonce*
     public function inserer(Annonce $annonce)
     {
+        // :nom = marqueur
+
         $requete = $this->dbPDO->prepare('INSERT INTO annonces (id_entreprise, titre, nom_entreprise, description, localisation, contrat, date_ajout, logo_entreprise) VALUES (:id_entreprise, :titre, :nom_entreprise, :description, :localisation, :contrat, :date_ajout, :logo_entreprise)');   
         
+        // Affecte la valeur pour chaque marqueur
         $requete->bindValue(':id_entreprise', $annonce->getId_entreprise());
         $requete->bindValue(':titre', $annonce->getTitre());
         $requete->bindValue(':nom_entreprise', $annonce->getNom_entreprise());
@@ -29,7 +31,6 @@ class AnnoncesManager
         $requete->execute();
     }
 
-    
     //requete toutes les annonces
     public function recupAllAnnonces()
     {
@@ -51,7 +52,7 @@ class AnnoncesManager
         return $donnees;
     }
 
-    //requete de recherche d'annonces
+    //requete de recherche d'annonces qui correspond au champs rentrer par l'utilisateur
     public function rechercheAnnonces($recherche)
     {
         $requete = $this->dbPDO->prepare("SELECT * FROM annonces WHERE titre LIKE '%$recherche%' ORDER BY date_ajout DESC");
@@ -62,28 +63,20 @@ class AnnoncesManager
         return $donnees;
     }
 
-    
-    //requete de modification d'une annonce
-
     //requete de suppression d'une annonce
     public function delete_annonce($id_annonce)
     {
-        if (isset($id_annonce) && !empty($id_annonce)) {
-             $this->dbPDO->query("DELETE FROM annonces WHERE id_annonce = $id_annonce");
+        if (!empty($id_annonce)) {
+            $this->dbPDO->query("DELETE FROM annonces WHERE id_annonce = $id_annonce");
         }
     }
 
-    /*
-     public function verifTitre(string $titre)
-     {
-    
-      $requete = $this->dbPDO->prepare("SELECT id_annonce FROM annonces WHERE titre = :titre");
-      $requete->bindValue(':titre',$titre);
-      $requete->execute();
-      //$tableau = $requete->fetch(PDO::FETCH_ASSOC);
-    //$this->id = $tableau['id_annonce'];
-      return $requete;
-
-     }
-     */
+    // requete de suppression des annonces d'une entreprise spécifique
+    // lorsque le compte de l'entreprise est supprimé
+    public function delete_entreprise_annonces($id_entreprise)
+    {
+        if (!empty($id_entreprise)) {
+            $this->dbPDO->query("DELETE FROM annonces WHERE id_entreprise = $id_entreprise");
+        }
+    }
 }
