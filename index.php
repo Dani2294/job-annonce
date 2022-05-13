@@ -12,7 +12,7 @@
       if(isset($_GET['recherche']) && !empty($_GET['recherche'])){
             $recherche = $_GET['recherche'];
             $donnees = $annonceManager->rechercheAnnonces($recherche);
-            //$resultat = $pdo->query("SELECT * FROM produit WHERE titre LIKE '%$recherche%'");
+            
         }
     }
 ?>
