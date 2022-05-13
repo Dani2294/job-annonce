@@ -8,7 +8,7 @@
 
     // Variable qui vas nous servir a afficher un message de confirmation de suppression du compte
     // lorsqu'un utilisateur ou une entreprise à supprimé son compte
-    $suppresionValidation;
+    $suppresionValidation = '';
 
     // On valide à l'utilisateur ou l'entreprise que son compte à bien été supprimé
     // si il y a une action de type supprimer dans l'url

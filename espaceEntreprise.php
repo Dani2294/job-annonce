@@ -116,11 +116,11 @@
                     <p class="card-text fs-5 mt-0 mb-1"><?= $annonce['nom_entreprise'] ?></p>
 
                     <div class="mb-2">
-                    <!-- Localisation -->
-                    <span class="card-text"><?= $annonce['localisation'] ?></span>
-                    |
-                    <!-- Contrat -->
-                    <span class="card-text"><?= $annonce['contrat'] ?></span>
+                        <!-- Localisation -->
+                        <span class="card-text"><i class="fa-solid fa-location-dot"></i>  <?= $annonce['localisation'] ?></span>
+                        |
+                        <!-- Contrat -->
+                        <span class="card-text"><i class="fa-solid fa-briefcase"></i>  <?= strtoupper($annonce['contrat']) ?></span>
                     </div>
                     
                     <!-- Description -->

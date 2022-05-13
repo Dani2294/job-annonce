@@ -1,0 +1,19 @@
+- cahier des charge
+- repository github
+- AUX MINIMUM
+1- INSCRIPTION
+2- CONNEXION
+3- FILTRE DE RECHERCHE
+4- PAGE D ACCUEIL
+5- PAGE CONTACT
+6- PAGE PROFIL
+7- back office
+8- gestion des photo
+
+Attention à la securité !
+
+
+les plus
+- panier
+- envoi de mail
+- reinitialisation de mot de passe

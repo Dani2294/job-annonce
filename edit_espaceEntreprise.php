@@ -32,6 +32,20 @@
         // on fait une mise à jour des donnees du formulaire dans la base de donne
         if($entreprise->isEntrepriseValide()){
             $entrepriseManager->update_entreprise($_SESSION['entreprise']['id_entreprise'],$_POST); // Ici MAJ des donnnees de l'entreprise dans la bdd
+
+            // On recupere les dernières modifications apportées à l'entreprise dans la bdd
+            $currEntreprise = $entrepriseManager->afficherEntreprise($_POST['email']);
+
+            // On affecte les infos de l'entreprise dans une session entreprise
+            $_SESSION['entreprise']['id_entreprise'] = $currEntreprise['id_entreprise'];
+            $_SESSION['entreprise']['nom'] = $currEntreprise['nom'];
+            $_SESSION['entreprise']['email'] = $currEntreprise['email'];
+            $_SESSION['entreprise']['tel'] = $currEntreprise['tel'];
+            $_SESSION['entreprise']['ville'] = $currEntreprise['ville'];
+            $_SESSION['entreprise']['secteur_activite'] = $currEntreprise['secteur_activite'];
+            $_SESSION['entreprise']['presentation'] = $currEntreprise['presentation'];
+            $_SESSION['entreprise']['logo'] = $currEntreprise['logo'];
+
             $content .= alertMessage("success","Les modifications ont bien été enregistrées");
         } else {
             // ici on récupère les erreurs si il y en a

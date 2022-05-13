@@ -12,13 +12,13 @@
 
     // On affiche 'homme' ou 'femme'
     // on fonction de la valeur de la civilité (soit 'm' soit 'f')
-    $genre="";
+    $genre = "";
     if($_SESSION['user']['civilite'] === 'm'){
         $genre="homme";
-        
     }else{
         $genre="femme";
     }
+    
 
     //suppression du compte de l'utilisateur
     if (isset($_GET['action']) && $_GET['action'] == 'supprimer') {

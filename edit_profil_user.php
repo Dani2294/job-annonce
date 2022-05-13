@@ -31,6 +31,20 @@
             // Sinon on affiche les erreurs
             if($utilisateur->isUserValide()){
                 $utilisateurManager->update_utilisateur($_SESSION['user']['id_utilisateur'],$_POST); // MAJ les donnees dans bdd
+
+                // On recupere les dernières modifications apportées à l'utilisateur dans la bdd
+                $currUtilisateur = $utilisateurManager->afficherUtilisateur($_POST['email'], $_POST['nom']);
+
+                // On affecte les dernières infos de l'utilisateur dans une session user
+                $_SESSION['user']['id_utilisateur'] = $currUtilisateur['id_utilisateur'];
+                $_SESSION['user']['nom'] = $currUtilisateur['nom'];
+                $_SESSION['user']['prenom'] = $currUtilisateur['prenom'];
+                $_SESSION['user']['email'] = $currUtilisateur['email'];
+                $_SESSION['user']['tel'] = $currUtilisateur['tel'];
+                $_SESSION['user']['civilite'] = $currUtilisateur['civilite'];
+                $_SESSION['user']['ville'] = $currUtilisateur['ville'];
+
+                // On met a jours les donnees de l'utilisateur dans la session;
                 $content .= alertMessage("success","Les modifications ont bien été enregistrées");
             } else {
                 // ici on récupère les erreurs si il y en a
